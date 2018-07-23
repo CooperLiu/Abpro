@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abpro", "src\Abpro\Abpro.cs
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{835F2003-6C6B-42CA-8ACE-752F40C87D4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abpro.Tests", "test\Abpro.Tests\Abpro.Tests.csproj", "{CF25DB84-CA8B-4F05-8E8C-760FE5FFACAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abpro.Tests", "test\Abpro.Tests\Abpro.Tests.csproj", "{CF25DB84-CA8B-4F05-8E8C-760FE5FFACAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abpro.WebApiClient", "src\Abpro.WebApiClient\Abpro.WebApiClient.csproj", "{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{CF25DB84-CA8B-4F05-8E8C-760FE5FFACAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF25DB84-CA8B-4F05-8E8C-760FE5FFACAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF25DB84-CA8B-4F05-8E8C-760FE5FFACAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
