@@ -18,7 +18,6 @@ namespace Abp.WebApi.Client
         /// to the logical name specified by <paramref name="name"/>.
         /// </summary>
         /// <param name="name">The logical name of the client to create.</param>
-        /// <param name="factoryOptions"></param>
         /// <returns>A new <see cref="HttpClient"/> instance.</returns>
         /// <remarks>
         /// <para>
@@ -35,6 +34,6 @@ namespace Abp.WebApi.Client
         /// as desired.
         /// </para>
         /// </remarks>
-        HttpClient CreateClient(string name, HttpClientFactoryOptions factoryOptions = null);
+        HttpClient CreateClient(string name);
     }
 }

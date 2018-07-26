@@ -7,14 +7,14 @@ namespace Abpro.WebApiClient
     {
         IWindsorContainer IocContainer { get; set; }
 
-        void Startup(IWindsorContainer container);
+        void InjectIocContainer(IWindsorContainer container);
     }
 
     public class AbproWebApiClientIocManager: IAbproWebApiClientIocManager
     {
         public IWindsorContainer IocContainer { get; set; }
 
-        public void Startup(IWindsorContainer container)
+        public void InjectIocContainer(IWindsorContainer container)
         {
             IocContainer = container;
             //注入

@@ -8,20 +8,17 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Abp.Dependency;
+using Abpro.WebApiClient;
 
 namespace Abp.WebApi.Client
 {
-    public class DefaultHttpClientFactory : IHttpClientFactory
+    internal class DefaultHttpClientFactory : IHttpClientFactory
     {
-
-        private readonly ConcurrentDictionary<string, HttpClientFactoryOptions> _optionsMonitor;
-
+        private readonly ILogger _logger;
+        private readonly IAbproWebApiClientIocManager _services;
+        //private readonly IOptionsMonitorEquivalent<HttpClientFactoryOptions> _optionsMonitor;
         private readonly IHttpMessageHandlerBuilderFilter[] _filters;
-
         private readonly Func<string, Lazy<ActiveHandlerTrackingEntry>> _entryFactory;
-
-
 
         // Default time of 10s for cleanup seems reasonable.
         // Quick math:
@@ -40,7 +37,6 @@ namespace Abp.WebApi.Client
         private readonly object _cleanupTimerLock;
         private readonly object _cleanupActiveLock;
 
-
         // Collection of 'active' handlers.
         //
         // Using lazy for synchronization to ensure that only one instance of HttpMessageHandler is created 
@@ -49,7 +45,6 @@ namespace Abp.WebApi.Client
         // internal for tests
         internal readonly ConcurrentDictionary<string, Lazy<ActiveHandlerTrackingEntry>> _activeHandlers;
 
-
         // Collection of 'expired' but not yet disposed handlers.
         //
         // Used when we're rotating handlers so that we can dispose HttpMessageHandler instances once they
@@ -57,20 +52,37 @@ namespace Abp.WebApi.Client
         //
         // internal for tests
         internal readonly ConcurrentQueue<ExpiredHandlerTrackingEntry> _expiredHandlers;
-
-
         private readonly TimerCallback _expiryCallback;
 
-
-        /// <summary>
-        /// logger
-        /// </summary>
-        private ILogger _logger { get; set; }
-
-
-
-        public DefaultHttpClientFactory(ILoggerFactory loggerFactory, HttpClientFactoryOptions options, IEnumerable<IHttpMessageHandlerBuilderFilter> filters)
+        public DefaultHttpClientFactory(
+            IAbproWebApiClientIocManager services,
+            ILoggerFactory loggerFactory,
+            //IOptionsMonitorEquivalent<HttpClientFactoryOptions> optionsMonitor,
+            IEnumerable<IHttpMessageHandlerBuilderFilter> filters)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (loggerFactory == null)
+            {
+                throw new ArgumentNullException(nameof(loggerFactory));
+            }
+
+            //if (optionsMonitor == null)
+            //{
+            //    throw new ArgumentNullException(nameof(optionsMonitor));
+            //}
+
+            if (filters == null)
+            {
+                throw new ArgumentNullException(nameof(filters));
+            }
+
+            _services = services;
+            //_optionsMonitor = optionsMonitor;
+            _filters = filters.ToArray();
 
             _logger = loggerFactory.Create(typeof(DefaultHttpClientFactory));
 
@@ -92,22 +104,44 @@ namespace Abp.WebApi.Client
             _cleanupActiveLock = new object();
         }
 
-        private ActiveHandlerTrackingEntry CreateHandlerEntry(string name)
+        public HttpClient CreateClient(string name)
         {
-            var builder = IocManager.Resolve<HttpMessageHandlerBuilder>(); //_services.GetRequiredService<HttpMessageHandlerBuilder>();
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            var entry = _activeHandlers.GetOrAdd(name, _entryFactory).Value;
+            var client = new HttpClient(entry.Handler, disposeHandler: false);
+
+            StartHandlerEntryTimer(entry);
+
+            var options = _services.IocContainer.Resolve<HttpClientFactoryOptions>(name);
+            for (var i = 0; i < options.HttpClientActions.Count; i++)
+            {
+                options.HttpClientActions[i](client);
+            }
+
+            return client;
+        }
+
+        // Internal for tests
+        internal ActiveHandlerTrackingEntry CreateHandlerEntry(string name)
+        {
+            var builder = _services.IocContainer.Resolve<HttpMessageHandlerBuilder>();
             builder.Name = name;
 
-            var options = _optionsMonitor.GetOrAdd(name, new HttpClientFactoryOptions());
+            var options = _services.IocContainer.Resolve<HttpClientFactoryOptions>(name);
 
             // This is similar to the initialization pattern in:
             // https://github.com/aspnet/Hosting/blob/e892ed8bbdcd25a0dafc1850033398dc57f65fe1/src/Microsoft.AspNetCore.Hosting/Internal/WebHost.cs#L188
-            //Action<HttpMessageHandlerBuilder> configure = Configure;
-            //for (var i = _filters.Length - 1; i >= 0; i--)
-            //{
-            //    configure = _filters[i].Configure(configure);
-            //}
+            Action<HttpMessageHandlerBuilder> configure = Configure;
+            for (var i = _filters.Length - 1; i >= 0; i--)
+            {
+                configure = _filters[i].Configure(configure);
+            }
 
-            //configure(builder);
+            configure(builder);
 
             // Wrap the handler so we can ensure the inner handler outlives the outer handler.
             var handler = new LifetimeTrackingHttpMessageHandler(builder.Build());
@@ -121,16 +155,70 @@ namespace Abp.WebApi.Client
             // this would happen, but we want to be sure.
             return new ActiveHandlerTrackingEntry(name, handler, options.HandlerLifetime);
 
-            //void Configure(HttpMessageHandlerBuilder b)
-            //{
-            //    for (var i = 0; i < options.HttpMessageHandlerBuilderActions.Count; i++)
-            //    {
-            //        options.HttpMessageHandlerBuilderActions[i](b);
-            //    }
-            //}
+            void Configure(HttpMessageHandlerBuilder b)
+            {
+                for (var i = 0; i < options.HttpMessageHandlerBuilderActions.Count; i++)
+                {
+                    options.HttpMessageHandlerBuilderActions[i](b);
+                }
+            }
         }
 
-        private void CleanupTimer_Tick(object state)
+        // Internal for tests
+        internal void ExpiryTimer_Tick(object state)
+        {
+            var active = (ActiveHandlerTrackingEntry)state;
+
+            // The timer callback should be the only one removing from the active collection. If we can't find
+            // our entry in the collection, then this is a bug.
+            var removed = _activeHandlers.TryRemove(active.Name, out var found);
+            Debug.Assert(removed, "Entry not found. We should always be able to remove the entry");
+            Debug.Assert(object.ReferenceEquals(active, found.Value), "Different entry found. The entry should not have been replaced");
+
+            // At this point the handler is no longer 'active' and will not be handed out to any new clients.
+            // However we haven't dropped our strong reference to the handler, so we can't yet determine if
+            // there are still any other outstanding references (we know there is at least one).
+            //
+            // We use a different state object to track expired handlers. This allows any other thread that acquired
+            // the 'active' entry to use it without safety problems.
+            var expired = new ExpiredHandlerTrackingEntry(active);
+            _expiredHandlers.Enqueue(expired);
+
+            Log.HandlerExpired(_logger, active.Name, active.Lifetime);
+
+            StartCleanupTimer();
+        }
+
+        // Internal so it can be overridden in tests
+        internal virtual void StartHandlerEntryTimer(ActiveHandlerTrackingEntry entry)
+        {
+            entry.StartExpiryTimer(_expiryCallback);
+        }
+
+        // Internal so it can be overridden in tests
+        internal virtual void StartCleanupTimer()
+        {
+            lock (_cleanupTimerLock)
+            {
+                if (_cleanupTimer == null)
+                {
+                    _cleanupTimer = new Timer(_cleanupCallback, null, DefaultCleanupInterval, Timeout.InfiniteTimeSpan);
+                }
+            }
+        }
+
+        // Internal so it can be overridden in tests
+        internal virtual void StopCleanupTimer()
+        {
+            lock (_cleanupTimerLock)
+            {
+                _cleanupTimer.Dispose();
+                _cleanupTimer = null;
+            }
+        }
+
+        // Internal for tests
+        internal void CleanupTimer_Tick(object state)
         {
             // Stop any pending timers, we'll restart the timer if there's anything left to process after cleanup.
             //
@@ -157,7 +245,7 @@ namespace Abp.WebApi.Client
                 }
 
                 var initialCount = _expiredHandlers.Count;
-                //Log.CleanupCycleStart(_logger, initialCount);
+                Log.CleanupCycleStart(_logger, initialCount);
 
                 var stopwatch = ValueStopwatch.StartNew();
 
@@ -177,7 +265,7 @@ namespace Abp.WebApi.Client
                         }
                         catch (Exception ex)
                         {
-                            //Log.CleanupItemFailed(_logger, entry.Name, ex);
+                            Log.CleanupItemFailed(_logger, entry.Name, ex);
                         }
                     }
                     else
@@ -188,7 +276,7 @@ namespace Abp.WebApi.Client
                     }
                 }
 
-                //Log.CleanupCycleEnd(_logger, stopwatch.GetElapsedTime(), disposedCount, _expiredHandlers.Count);
+                Log.CleanupCycleEnd(_logger, stopwatch.GetElapsedTime(), disposedCount, _expiredHandlers.Count);
             }
             finally
             {
@@ -202,80 +290,61 @@ namespace Abp.WebApi.Client
             }
         }
 
-        // Internal so it can be overridden in tests
-        internal virtual void StopCleanupTimer()
+        private static class Log
         {
-            lock (_cleanupTimerLock)
+            //public static class EventIds
+            //{
+            //    public static readonly EventId CleanupCycleStart = new EventId(100, "CleanupCycleStart");
+            //    public static readonly EventId CleanupCycleEnd = new EventId(101, "CleanupCycleEnd");
+            //    public static readonly EventId CleanupItemFailed = new EventId(102, "CleanupItemFailed");
+            //    public static readonly EventId HandlerExpired = new EventId(103, "HandlerExpired");
+            //}
+
+            //private static readonly Action<ILogger, int, Exception> _cleanupCycleStart = LoggerMessage.Define<int>(
+            //    LogLevel.Debug,
+            //    EventIds.CleanupCycleStart,
+            //    "Starting HttpMessageHandler cleanup cycle with {InitialCount} items");
+
+            //private static readonly Action<ILogger, double, int, int, Exception> _cleanupCycleEnd = LoggerMessage.Define<double, int, int>(
+            //    LogLevel.Debug,
+            //    EventIds.CleanupCycleEnd,
+            //    "Ending HttpMessageHandler cleanup cycle after {ElapsedMilliseconds}ms - processed: {DisposedCount} items - remaining: {RemainingItems} items");
+
+            //private static readonly Action<ILogger, string, Exception> _cleanupItemFailed = LoggerMessage.Define<string>(
+            //    LogLevel.Error,
+            //    EventIds.CleanupItemFailed,
+            //    "HttpMessageHandler.Dispose() threw and unhandled exception for client: '{ClientName}'");
+
+            //private static readonly Action<ILogger, double, string, Exception> _handlerExpired = LoggerMessage.Define<double, string>(
+            //    LogLevel.Debug,
+            //    EventIds.HandlerExpired,
+            //    "HttpMessageHandler expired after {HandlerLifetime}ms for client '{ClientName}'");
+
+
+            public static void CleanupCycleStart(ILogger logger, int initialCount)
             {
-                _cleanupTimer.Dispose();
-                _cleanupTimer = null;
-            }
-        }
-
-        private void ExpiryTimer_Tick(object state)
-        {
-            var active = (ActiveHandlerTrackingEntry)state;
-
-            // The timer callback should be the only one removing from the active collection. If we can't find
-            // our entry in the collection, then this is a bug.
-            var removed = _activeHandlers.TryRemove(active.Name, out var found);
-            Debug.Assert(removed, "Entry not found. We should always be able to remove the entry");
-            Debug.Assert(object.ReferenceEquals(active, found.Value), "Different entry found. The entry should not have been replaced");
-
-            // At this point the handler is no longer 'active' and will not be handed out to any new clients.
-            // However we haven't dropped our strong reference to the handler, so we can't yet determine if
-            // there are still any other outstanding references (we know there is at least one).
-            //
-            // We use a different state object to track expired handlers. This allows any other thread that acquired
-            // the 'active' entry to use it without safety problems.
-            var expired = new ExpiredHandlerTrackingEntry(active);
-            _expiredHandlers.Enqueue(expired);
-
-            // Log.HandlerExpired(_logger, active.Name, active.Lifetime);
-
-            StartCleanupTimer();
-        }
-
-        // Internal so it can be overridden in tests
-        internal virtual void StartCleanupTimer()
-        {
-            lock (_cleanupTimerLock)
-            {
-                if (_cleanupTimer == null)
-                {
-                    _cleanupTimer = new Timer(_cleanupCallback, null, DefaultCleanupInterval, Timeout.InfiniteTimeSpan);
-                }
-            }
-        }
-
-
-        public HttpClient CreateClient(string name, HttpClientFactoryOptions factoryOptions = null)
-        {
-            Check.NotNullOrWhiteSpace(name, nameof(name));
-
-            var entry = _activeHandlers.GetOrAdd(name, _entryFactory).Value;
-            var client = new HttpClient(entry.Handler, disposeHandler: false);
-
-            StartHandlerEntryTimer(entry);
-
-            var options = factoryOptions ?? new HttpClientFactoryOptions();
-
-            _optionsMonitor.GetOrAdd(name, options);
-
-
-            for (var i = 0; i < options.HttpClientActions.Count; i++)
-            {
-                options.HttpClientActions[i](client);
+                //_cleanupCycleStart(logger, initialCount, null);
+                logger.Debug($"Starting HttpMessageHandler cleanup cycle with {initialCount} items");
             }
 
-            return client;
-        }
+            public static void CleanupCycleEnd(ILogger logger, TimeSpan duration, int disposedCount, int finalCount)
+            {
+                //_cleanupCycleEnd(logger, duration.TotalMilliseconds, disposedCount, finalCount, null);
 
-        // Internal so it can be overridden in tests
-        internal virtual void StartHandlerEntryTimer(ActiveHandlerTrackingEntry entry)
-        {
-            entry.StartExpiryTimer(_expiryCallback);
-        }
+                logger.Debug($"Ending HttpMessageHandler cleanup cycle after {duration.TotalMilliseconds}ms - processed: {disposedCount} items - remaining: {finalCount} items");
+            }
 
+            public static void CleanupItemFailed(ILogger logger, string clientName, Exception exception)
+            {
+                //_cleanupItemFailed(logger, clientName, exception);
+                logger.Error($"HttpMessageHandler.Dispose() threw and unhandled exception for client: '{clientName}'", exception);
+            }
+
+            public static void HandlerExpired(ILogger logger, string clientName, TimeSpan lifetime)
+            {
+                //_handlerExpired(logger, lifetime.TotalMilliseconds, clientName, null);
+                logger.Debug($"HttpMessageHandler expired after {lifetime.TotalMilliseconds}ms for client '{clientName}'");
+            }
+        }
     }
 }
