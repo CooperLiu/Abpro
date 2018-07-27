@@ -5,10 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Abpro.WebApiClient;
+using Abp.WebApi.Client.DependencyInjection;
 
 namespace Abp.WebApi.Client
 {
@@ -56,15 +54,10 @@ namespace Abp.WebApi.Client
 
         public DefaultHttpClientFactory(
             IAbproWebApiClientIocManager services,
-            ILoggerFactory loggerFactory,
+            ILoggerFactory loggerFactory)
             //IOptionsMonitorEquivalent<HttpClientFactoryOptions> optionsMonitor,
-            IEnumerable<IHttpMessageHandlerBuilderFilter> filters)
+            //IEnumerable<IHttpMessageHandlerBuilderFilter> filters)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
             if (loggerFactory == null)
             {
                 throw new ArgumentNullException(nameof(loggerFactory));
@@ -75,14 +68,14 @@ namespace Abp.WebApi.Client
             //    throw new ArgumentNullException(nameof(optionsMonitor));
             //}
 
-            if (filters == null)
-            {
-                throw new ArgumentNullException(nameof(filters));
-            }
+            //if (filters == null)
+            //{
+            //    throw new ArgumentNullException(nameof(filters));
+            //}
 
-            _services = services;
+            _services = services ?? throw new ArgumentNullException(nameof(services));
             //_optionsMonitor = optionsMonitor;
-            _filters = filters.ToArray();
+            //_filters = filters.ToArray();
 
             _logger = loggerFactory.Create(typeof(DefaultHttpClientFactory));
 
@@ -136,10 +129,10 @@ namespace Abp.WebApi.Client
             // This is similar to the initialization pattern in:
             // https://github.com/aspnet/Hosting/blob/e892ed8bbdcd25a0dafc1850033398dc57f65fe1/src/Microsoft.AspNetCore.Hosting/Internal/WebHost.cs#L188
             Action<HttpMessageHandlerBuilder> configure = Configure;
-            for (var i = _filters.Length - 1; i >= 0; i--)
-            {
-                configure = _filters[i].Configure(configure);
-            }
+            //for (var i = _filters.Length - 1; i >= 0; i--)
+            //{
+            //    configure = _filters[i].Configure(configure);
+            //}
 
             configure(builder);
 

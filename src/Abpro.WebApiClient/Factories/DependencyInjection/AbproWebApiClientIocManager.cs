@@ -1,7 +1,7 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 
-namespace Abpro.WebApiClient
+namespace Abp.WebApi.Client.DependencyInjection
 {
     public interface IAbproWebApiClientIocManager
     {
