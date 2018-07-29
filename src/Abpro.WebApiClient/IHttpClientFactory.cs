@@ -19,20 +19,31 @@ namespace Abpro.WebApiClient
 
         private readonly Func<string, Lazy<ActiveHandlerTrackingEntry>> _entryFactory;
 
-        public DefaultHttpClientFactory(ILoggerFactory loggerFactory)
+        private readonly IHttpClientFactoryDependency _dependency;
+
+        public DefaultHttpClientFactory(ILoggerFactory loggerFactory, IHttpClientFactoryDependency dependency)
         {
             _logger = loggerFactory.Create(typeof(DefaultHttpClientFactory));
             _activeHandlers = new ConcurrentDictionary<string, Lazy<ActiveHandlerTrackingEntry>>(StringComparer.Ordinal);
+            _dependency = dependency;
 
             _entryFactory = name =>
             {
-                return new Lazy<ActiveHandlerTrackingEntry>(() => { return CreateHandlerEntry(name);},LazyThreadSafetyMode.ExecutionAndPublication);
+                return new Lazy<ActiveHandlerTrackingEntry>(() =>
+                {
+                    return CreateHandlerEntry(name);
+                }, LazyThreadSafetyMode.ExecutionAndPublication);
             };
         }
 
         private ActiveHandlerTrackingEntry CreateHandlerEntry(string name)
         {
-            throw new NotImplementedException();
+            var httpMessageHandlerBuilder = _dependency.IocContainer.Resolve<HttpMessageHandlerBuilder>();
+
+            httpMessageHandlerBuilder.Name = name ?? throw new ArgumentNullException(nameof(name));
+
+            //var options = _dependency.IocContainer.Resolve<HttpClientFactoryOptions>();// how to get options for factory,and how to new instance of options for factory?
+
         }
 
 
