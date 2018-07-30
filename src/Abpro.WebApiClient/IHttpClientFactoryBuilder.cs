@@ -34,17 +34,47 @@ namespace Abpro.WebApiClient
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (configureClient == null) throw new ArgumentNullException(nameof(configureClient));
 
-            //builder.Services.IocContainer.Kernel.Register(
-            //    Component
-            //        .For(typeof(HttpClientFactoryOptions))
-            //        .LifestyleTransient()
-            //        .Named(builder.Name)
-            //        .DependsOn()
-            //    );
+            if (!builder.Services.IsRegistered<HttpClientFactoryOptions>())
+            {
 
-            //var options = builder.Services.IocContainer.Resolve<HttpClientFactoryOptions>(builder.Name);
+                builder.Services.IocContainer.Kernel.Register(
+                    Component
+                        .For(typeof(HttpClientFactoryOptions))
+                        .LifestyleTransient()
+                        .Named(builder.Name)
+                    //.OnCreate(a => { var o = (HttpClientFactoryOptions)a; o.HttpClientActions.Add(configureClient); })
+                    );
+            }
 
-            //options.HttpClientActions.Add(configureClient);
+
+            var options = builder.Services.IocContainer.Resolve<HttpClientFactoryOptions>(builder.Name);
+
+            options.HttpClientActions.Add(configureClient);
+
+            return builder;
+        }
+
+        public static IHttpClientFactoryBuilder ConfigurePrimaryHttpMessageHandler(this IHttpClientFactoryBuilder builder,
+            Func<HttpMessageHandler> configureHandler)
+        {
+
+            if (configureHandler == null) throw new ArgumentNullException(nameof(configureHandler));
+
+            if (!builder.Services.IsRegistered<HttpClientFactoryOptions>())
+            {
+
+                builder.Services.IocContainer.Kernel.Register(
+                    Component
+                        .For(typeof(HttpClientFactoryOptions))
+                        .LifestyleTransient()
+                        .Named(builder.Name)
+                    //.OnCreate(a => { var o = (HttpClientFactoryOptions)a; o.HttpClientActions.Add(configureClient); })
+                    );
+            }
+
+            var options = builder.Services.IocContainer.Resolve<HttpClientFactoryOptions>(builder.Name);
+
+            options.HttpMessageHandlerBuilderActions.Add(b => b.PrimaryHandler = configureHandler());
 
             return builder;
         }

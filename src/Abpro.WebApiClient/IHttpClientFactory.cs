@@ -194,6 +194,8 @@ namespace Abpro.WebApiClient
 
             builder.Name = name ?? throw new ArgumentNullException(nameof(name));
 
+            var filterArray = _filters.ToArray();
+
             /*
              * HttpClient 配置操作
              *
@@ -208,9 +210,9 @@ namespace Abpro.WebApiClient
             // https://github.com/aspnet/Hosting/blob/e892ed8bbdcd25a0dafc1850033398dc57f65fe1/src/Microsoft.AspNetCore.Hosting/Internal/WebHost.cs#L188
             Action<HttpMessageHandlerBuilder> configure = Configure;
 
-            for (var i = _filters.Count() - 1; i >= 0; i--)
+            for (var i = filterArray.Length - 1; i >= 0; i--)
             {
-                configure = options.HttpMessageHandlerBuilderFilters[i].Configure(configure);
+                configure = filterArray[i].Configure(configure);
             }
 
             configure(builder);

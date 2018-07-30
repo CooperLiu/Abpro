@@ -67,13 +67,6 @@ namespace Abpro.WebApiClient
                 _handlerLifetime = value;
             }
         }
-
-        /// <summary>
-        /// 在调用<see cref="HttpMessageHandlerBuilder.Build()"/> 前，遍历调用Filter。
-        /// </summary>
-        public IList<IHttpMessageHandlerBuilderFilter> HttpMessageHandlerBuilderFilters { get; } = new List<IHttpMessageHandlerBuilderFilter>();
-
-        
         
     }
 }
