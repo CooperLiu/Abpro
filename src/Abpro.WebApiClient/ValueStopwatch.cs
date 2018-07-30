@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Abp.WebApi.Client
+namespace Abpro.WebApiClient
 {
     internal struct ValueStopwatch
     {

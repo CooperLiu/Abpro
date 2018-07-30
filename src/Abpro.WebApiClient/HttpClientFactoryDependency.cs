@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Castle.MicroKernel.Registration;
+using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.Windsor;
 
 namespace Abpro.WebApiClient
@@ -13,6 +14,12 @@ namespace Abpro.WebApiClient
         IWindsorContainer IocContainer { get; set; }
 
         void Install(IWindsorContainer iocContainer);
+
+        void Register<TType>();
+
+        void Register<TType, TImpl>()
+            where TType : class
+            where TImpl : class, TType;
     }
 
     public class HttpClientFactoryDependency : IHttpClientFactoryDependency
@@ -23,28 +30,34 @@ namespace Abpro.WebApiClient
         {
             IocContainer = iocContainer ?? throw new ArgumentNullException(nameof(iocContainer));
 
-            RegisterEntrySelf();
+            RegisterBaseService();
         }
 
-        private void RegisterEntrySelf()
+        public void Register<TType>()
         {
+            IocContainer.Kernel.Register(
+                Component.For(typeof(TType)).LifestyleTransient()
+            );
+        }
+
+        public void Register<TType, TImpl>() where TType : class
+            where TImpl : class, TType
+        {
+            IocContainer.Kernel.Register(
+                Component.For<TType, TImpl>().LifestyleTransient()
+                );
+        }
+
+        private void RegisterBaseService()
+        {
+            IocContainer.Kernel.Resolver.AddSubResolver(new CollectionResolver(IocContainer.Kernel, false));
+
             IocContainer.Register(
-                Component.For<IHttpClientFactoryDependency, HttpClientFactoryDependency>().LifestyleSingleton(),
-
-                Component.For<HttpMessageHandlerBuilder, DefaultHttpMessageHandlerBuilder>().LifestyleTransient(),
-
-                Component.For<IHttpClientFactory, DefaultHttpClientFactory>().LifestyleSingleton()
-
+                Component.For<IHttpClientFactoryDependency, HttpClientFactoryDependency>().LifestyleSingleton()
                 );
         }
     }
 
 
-    internal static class IHttpClientFactoryDependencyExtensions
-    {
-        public static bool IsRegistered<TType>(this IHttpClientFactoryDependency dependency)
-        {
-            return dependency.IocContainer.Kernel.HasComponent(typeof(TType));
-        }
-    }
+
 }
