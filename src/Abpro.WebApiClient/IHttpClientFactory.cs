@@ -190,7 +190,7 @@ namespace Abpro.WebApiClient
 
         private ActiveHandlerTrackingEntry CreateHandlerEntry(string name)
         {
-            var builder = _dependency.IocContainer.Resolve<HttpMessageHandlerBuilder>();
+            var builder = _dependency.IocContainer.Resolve<IHttpMessageHandlerBuilder>();
 
             builder.Name = name ?? throw new ArgumentNullException(nameof(name));
 
@@ -208,7 +208,7 @@ namespace Abpro.WebApiClient
 
             // This is similar to the initialization pattern in:
             // https://github.com/aspnet/Hosting/blob/e892ed8bbdcd25a0dafc1850033398dc57f65fe1/src/Microsoft.AspNetCore.Hosting/Internal/WebHost.cs#L188
-            Action<HttpMessageHandlerBuilder> configure = Configure;
+            Action<IHttpMessageHandlerBuilder> configure = Configure;
 
             for (var i = filterArray.Length - 1; i >= 0; i--)
             {
@@ -230,7 +230,7 @@ namespace Abpro.WebApiClient
             return new ActiveHandlerTrackingEntry(name, handler, options.HandlerLifetime);
 
 
-            void Configure(HttpMessageHandlerBuilder b)
+            void Configure(IHttpMessageHandlerBuilder b)
             {
                 for (var i = 0; i < options.HttpMessageHandlerBuilderActions.Count; i++)
                 {

@@ -23,7 +23,7 @@ namespace Abpro.WebApiClient
         /// <summary>
         /// Gets a list of operations used to configure an <see cref="HttpMessageHandlerBuilder"/>.
         /// </summary>
-        public IList<Action<HttpMessageHandlerBuilder>> HttpMessageHandlerBuilderActions { get; } = new List<Action<HttpMessageHandlerBuilder>>();
+        public IList<Action<IHttpMessageHandlerBuilder>> HttpMessageHandlerBuilderActions { get; } = new List<Action<IHttpMessageHandlerBuilder>>();
 
         /// <summary>
         /// Gets a list of operations used to configure an <see cref="HttpClient"/>.

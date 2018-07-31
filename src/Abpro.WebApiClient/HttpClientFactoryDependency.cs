@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.Windsor;
@@ -13,7 +9,7 @@ namespace Abpro.WebApiClient
     {
         IWindsorContainer IocContainer { get; set; }
 
-        void Install(IWindsorContainer iocContainer);
+        //void Install(IWindsorContainer iocContainer);
 
         void Register<TType>();
 
@@ -26,7 +22,7 @@ namespace Abpro.WebApiClient
     {
         public IWindsorContainer IocContainer { get; set; }
 
-        public void Install(IWindsorContainer iocContainer)
+        public HttpClientFactoryDependency(IWindsorContainer iocContainer)
         {
             IocContainer = iocContainer ?? throw new ArgumentNullException(nameof(iocContainer));
 
@@ -53,7 +49,10 @@ namespace Abpro.WebApiClient
             IocContainer.Kernel.Resolver.AddSubResolver(new CollectionResolver(IocContainer.Kernel, false));
 
             IocContainer.Register(
-                Component.For<IHttpClientFactoryDependency, HttpClientFactoryDependency>().LifestyleSingleton()
+                Component
+                    .For<IHttpClientFactoryDependency, HttpClientFactoryDependency>()
+                    .LifestyleSingleton()
+                    .UsingFactoryMethod<IHttpClientFactoryDependency>(f => this)
                 );
         }
     }

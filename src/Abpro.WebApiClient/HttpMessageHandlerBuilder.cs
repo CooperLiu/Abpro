@@ -5,9 +5,16 @@ using System.Net.Http;
 
 namespace Abpro.WebApiClient
 {
+    public interface IHttpMessageHandlerBuilder
+    {
+        string Name { get; set; }
+        HttpMessageHandler PrimaryHandler { get; set; }
+        IList<DelegatingHandler> AdditionalHandlers { get; }
+        HttpMessageHandler Build();
+    }
+
     public abstract class HttpMessageHandlerBuilder
     {
-
         public abstract string Name { get; set; }
 
         public abstract HttpMessageHandler PrimaryHandler { get; set; }
@@ -48,7 +55,7 @@ namespace Abpro.WebApiClient
         }
     }
 
-    internal class DefaultHttpMessageHandlerBuilder : HttpMessageHandlerBuilder
+    internal class DefaultHttpMessageHandlerBuilder : HttpMessageHandlerBuilder, IHttpMessageHandlerBuilder
     {
         private string _name;
 

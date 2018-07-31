@@ -11,7 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{835F2003-6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abpro.Tests", "test\Abpro.Tests\Abpro.Tests.csproj", "{CF25DB84-CA8B-4F05-8E8C-760FE5FFACAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abpro.WebApiClient", "src\Abpro.WebApiClient\Abpro.WebApiClient.csproj", "{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abpro.WebApiClient", "src\Abpro.WebApiClient\Abpro.WebApiClient.csproj", "{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abpro.WebApiClient.Tests", "test\Abpro.WebApiClient.Tests\Abpro.WebApiClient.Tests.csproj", "{60AF8BF3-AD33-4C1B-922F-FCE29BDD9A65}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,12 +37,17 @@ Global
 		{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{590F0707-8C2C-48E2-A5A6-8F5A6E579A23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60AF8BF3-AD33-4C1B-922F-FCE29BDD9A65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60AF8BF3-AD33-4C1B-922F-FCE29BDD9A65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60AF8BF3-AD33-4C1B-922F-FCE29BDD9A65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60AF8BF3-AD33-4C1B-922F-FCE29BDD9A65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CF25DB84-CA8B-4F05-8E8C-760FE5FFACAD} = {835F2003-6C6B-42CA-8ACE-752F40C87D4A}
+		{60AF8BF3-AD33-4C1B-922F-FCE29BDD9A65} = {835F2003-6C6B-42CA-8ACE-752F40C87D4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3F1E02E8-7F24-4A04-B7CD-BD6FF9004747}

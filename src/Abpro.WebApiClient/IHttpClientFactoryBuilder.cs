@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using Castle.MicroKernel.Registration;
 
@@ -42,16 +43,18 @@ namespace Abpro.WebApiClient
                         .For(typeof(HttpClientFactoryOptions))
                         .LifestyleTransient()
                         .Named(builder.Name)
-                    //.OnCreate(a => { var o = (HttpClientFactoryOptions)a; o.HttpClientActions.Add(configureClient); })
+                    .OnCreate(a => AddOptionsHttpClientActions((HttpClientFactoryOptions)a, configureClient))
                     );
             }
 
-
-            var options = builder.Services.IocContainer.Resolve<HttpClientFactoryOptions>(builder.Name);
-
-            options.HttpClientActions.Add(configureClient);
+            //builder.Services.IocContainer.Kernel.ComponentCreated += HttpClientOptionsComponentCreated;
 
             return builder;
+        }
+
+        private static void AddOptionsHttpClientActions(HttpClientFactoryOptions options, Action<HttpClient> configureClient)
+        {
+            options.HttpClientActions.Add(configureClient);
         }
 
         public static IHttpClientFactoryBuilder ConfigurePrimaryHttpMessageHandler(this IHttpClientFactoryBuilder builder,
@@ -68,16 +71,19 @@ namespace Abpro.WebApiClient
                         .For(typeof(HttpClientFactoryOptions))
                         .LifestyleTransient()
                         .Named(builder.Name)
-                    //.OnCreate(a => { var o = (HttpClientFactoryOptions)a; o.HttpClientActions.Add(configureClient); })
+                        .OnCreate(a => { var o = (HttpClientFactoryOptions)a; o.HttpMessageHandlerBuilderActions.Add(b => b.PrimaryHandler = configureHandler()); })
                     );
             }
 
-            var options = builder.Services.IocContainer.Resolve<HttpClientFactoryOptions>(builder.Name);
+            //builder.Services.IocContainer.Kernel.ComponentCreated += Kernel_ComponentCreated;
 
-            options.HttpMessageHandlerBuilderActions.Add(b => b.PrimaryHandler = configureHandler());
+            //var options = builder.Services.IocContainer.Resolve<HttpClientFactoryOptions>(builder.Name);
+
+            //options.HttpMessageHandlerBuilderActions.Add(b => b.PrimaryHandler = configureHandler());
 
             return builder;
         }
+
     }
 
 
@@ -100,7 +106,7 @@ namespace Abpro.WebApiClient
 
             dependency.IocContainer.Register(
 
-                Component.For<HttpMessageHandlerBuilder, DefaultHttpMessageHandlerBuilder>().LifestyleTransient(),
+                Component.For<IHttpMessageHandlerBuilder, DefaultHttpMessageHandlerBuilder>().LifestyleTransient(),
 
                 Component.For<IHttpClientFactory, DefaultHttpClientFactory>().LifestyleSingleton()
 

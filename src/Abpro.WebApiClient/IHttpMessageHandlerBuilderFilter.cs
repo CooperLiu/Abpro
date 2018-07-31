@@ -16,7 +16,7 @@ namespace Abpro.WebApiClient
         /// Applies additional initialization to the <see cref="HttpMessageHandlerBuilder"/>
         /// </summary>
         /// <param name="next">A delegate which will run the next <see cref="IHttpMessageHandlerBuilderFilter"/>.</param>
-        Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next);
+        Action<IHttpMessageHandlerBuilder> Configure(Action<IHttpMessageHandlerBuilder> next);
     }
 
 
@@ -28,7 +28,7 @@ namespace Abpro.WebApiClient
         {
             _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
         }
-        public Action<HttpMessageHandlerBuilder> Configure(Action<HttpMessageHandlerBuilder> next)
+        public Action<IHttpMessageHandlerBuilder> Configure(Action<IHttpMessageHandlerBuilder> next)
         {
             if (next == null) throw new ArgumentNullException(nameof(next));
 
