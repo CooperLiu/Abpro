@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Abp" Version="3.8.1"></PackageReference>
+    <PackageReference Include="Abp.AutoMapper" Version="3.8.1"></PackageReference>
+    <PackageReference Include="Rebus" Version="4.2.1" />
+    <PackageReference Include="Rebus.Castle.Windsor" Version="4.1.0" />
+    <PackageReference Include="Rebus.RabbitMq" Version="4.4.2" />
+    <PackageReference Include="Rebus.Nlog" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <PackageReference Include="Abp" Version="1.4.2.0"></PackageReference>
+    <PackageReference Include="Abp.AutoMapper" Version="1.4.2.0"></PackageReference>
+    <PackageReference Include="Rebus" Version="3.1.2" />
+    <PackageReference Include="Rebus.Castle.Windsor" Version="3.0.0" />
+    <PackageReference Include="Rebus.NewtonsoftJson" Version="3.1.2" />
+    <PackageReference Include="Rebus.RabbitMq" Version="3.0.0" />
+    <PackageReference Include="Rebus.Nlog" Version="3.0.0" />
+
+  </ItemGroup>
+
+</Project>
