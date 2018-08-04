@@ -13,6 +13,7 @@ namespace MessageBusPublisher
         {
             LogManager.Configuration = new XmlLoggingConfiguration(ConfigurationManager.AppSettings["NlogConfigFilePath"]);
             _bs.Initialize();
+            TestEventDataTrigger.TestTheFistCaseEventDataTrigger();
         }
 
         public void Stop()

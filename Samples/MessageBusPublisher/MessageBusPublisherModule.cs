@@ -25,6 +25,7 @@ namespace MessageBusPublisher
             Configuration
                 .Modules
                 .UseRebusPublisher()
+                .EnableMessageAuditing("MessageBusAuditing")
                 .ConnectionTo(RabbitMqServerConnectString)
                 .UseLogging(c => c.NLog());
 

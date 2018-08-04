@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="MessageBus\" />
+    <Compile Remove="MessageBus\**" />
+    <EmbeddedResource Remove="MessageBus\**" />
+    <None Remove="MessageBus\**" />
   </ItemGroup>
 
 </Project>

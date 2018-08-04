@@ -110,13 +110,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MessageBusAuditingConsumer.cs" />
     <Compile Include="MessageBusConsumerBootstrap.cs" />
     <Compile Include="MessageBusConsumerModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestEvenDataConsumer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -126,6 +130,10 @@
     <ProjectReference Include="..\..\src\Abpro.MessageBus\Abpro.MessageBus.csproj">
       <Project>{03e89726-716b-4700-bb27-e26b8793ba60}</Project>
       <Name>Abpro.MessageBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MessageBusMqMessage\MessageBusMqMessage.csproj">
+      <Project>{dfede6b7-cc45-4d06-b98d-82e3798967e1}</Project>
+      <Name>MessageBusMqMessage</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

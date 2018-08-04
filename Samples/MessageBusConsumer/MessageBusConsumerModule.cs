@@ -23,12 +23,13 @@ namespace MessageBusConsumer
             Configuration
                 .Modules
                 .UseRebusConsumer()
+                .EnableMessageAuditing("MessageBusAuditing")
                 .SetMaxParallelism(1)
                 .SetNumberOfWorkers(1)
                 .UseLogging(c => c.NLog())
                 .ConnectTo(RabbitMqServerConnectString)
                 .UseQueue(Assembly.GetExecutingAssembly().GetName().Name)
-                .RegisterHandlerInAssemblies(Assembly.GetExecutingAssembly(), typeof(MessageBusConsumerModule).Assembly);
+                .RegisterHandlerInAssemblies(Assembly.GetExecutingAssembly());
 
 
         }
