@@ -3,6 +3,7 @@ using System.Reflection;
 using Abp.Modules;
 using Abp.Runtime.Caching.Redis;
 using Abpro.MessageBus;
+using Abpro.MessageBus.Publisher;
 using Abpro.MessageBus.Publisher.Setup;
 using Rebus.NLog;
 

@@ -1,9 +1,8 @@
-﻿using Abpro.MessageBus.Publisher;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 
-namespace Abpro.MessageBus.Dependency
+namespace Abpro.MessageBus.Publisher.Dependency
 {
     /// <summary>
     /// Rebus消息总线Ioc注册

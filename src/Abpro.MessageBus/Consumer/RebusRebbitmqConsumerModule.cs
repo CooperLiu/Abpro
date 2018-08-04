@@ -1,15 +1,13 @@
 ﻿using System.Reflection;
 using Abp.Modules;
 using Abpro.MessageBus.Consumer;
-using Abpro.MessageBus.Dependency;
+using Abpro.MessageBus.Consumer.Dependency;
 using Rebus.Bus;
 
-namespace Abpro.MessageBus
+namespace Abpro.MessageBus.Consumer
 {
     public class RebusRebbitmqConsumerModule : AbpModule
     {
-        // private static string RabbitMqServerConnectString = ConfigurationManager.ConnectionStrings["RabbitMqServer"].ConnectionString;
-
         private IBus _bus;
 
         public override void PreInitialize()
@@ -37,6 +35,7 @@ namespace Abpro.MessageBus
         public override void PostInitialize()
         {
             _bus = IocManager.Resolve<IRebusConsumerBootstrapper>().Start();
+
         }
 
         public override void Shutdown()

@@ -110,7 +110,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MessageBusAuditingConsumer.cs" />
     <Compile Include="MessageBusConsumerBootstrap.cs" />
     <Compile Include="MessageBusConsumerModule.cs" />
     <Compile Include="Program.cs" />

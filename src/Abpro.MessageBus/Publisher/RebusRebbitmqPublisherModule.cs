@@ -1,11 +1,9 @@
-﻿using System.Reflection;
-using Abp.AutoMapper;
+﻿using Abp.AutoMapper;
 using Abp.Modules;
-using Abpro.MessageBus.Dependency;
-using Abpro.MessageBus.Publisher;
+using Abpro.MessageBus.Publisher.Dependency;
 using Rebus.Bus;
 
-namespace Abpro.MessageBus
+namespace Abpro.MessageBus.Publisher
 {
     [DependsOn(
         typeof(AbpAutoMapperModule)

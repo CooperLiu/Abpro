@@ -1,10 +1,9 @@
-﻿using Abpro.MessageBus.Consumer;
-using Abpro.MessageBus.Idempotents;
+﻿using Abpro.MessageBus.Idempotents;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 
-namespace Abpro.MessageBus.Dependency
+namespace Abpro.MessageBus.Consumer.Dependency
 {
     /// <summary>
     /// Rebus消费端Ioc注册
