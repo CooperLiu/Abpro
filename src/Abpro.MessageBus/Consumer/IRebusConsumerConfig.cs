@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Abpro.MessageBus.Consumer.Auditing;
 using Rebus.Bus;
 using Rebus.Config;
 using Rebus.Serialization;
@@ -65,6 +66,8 @@ namespace Abpro.MessageBus.Consumer
         /// </summary>
         Action<StandardConfigurer<ISubscriptionStorage>> SubscriptionStorage { get; }
 
+        Action<RebusAuditMessage> AuditMessageHandler { get; }
+
         /// <summary>
         /// 连接RabbitMq
         /// </summary>
@@ -98,7 +101,7 @@ namespace Abpro.MessageBus.Consumer
         /// </summary>
         /// <param name="messageAuditingQueueName">消息审计队列名</param>
         /// <returns></returns>
-        IRebusConsumerConfig EnableMessageAuditing(string messageAuditingQueueName);
+        IRebusConsumerConfig EnableMessageAuditing(string messageAuditingQueueName, Action<RebusAuditMessage> auditMessageHandler = null);
 
         /// <summary>
         /// 注册Rebus Handlers
@@ -126,5 +129,6 @@ namespace Abpro.MessageBus.Consumer
         /// <param name="serializerConfigurer"></param>
         /// <returns></returns>
         IRebusConsumerConfig UseSerializer(Action<StandardConfigurer<ISerializer>> serializerConfigurer);
+
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using Abp;
+using Abp.Dependency;
+using Abpro.MessageBus.Consumer.Auditing;
 using Newtonsoft.Json;
 using Rebus.Config;
 #if NET461
@@ -79,6 +81,7 @@ namespace Abpro.MessageBus.Consumer
         /// </summary>
         public Action<StandardConfigurer<ISubscriptionStorage>> SubscriptionStorage { get; private set; }
 
+        public Action<RebusAuditMessage> AuditMessageHandler { get; private set; }
 
         public IRebusConsumerConfig ConnectTo(string mqConnectionString)
         {
@@ -111,10 +114,14 @@ namespace Abpro.MessageBus.Consumer
             return this;
         }
 
-        public IRebusConsumerConfig EnableMessageAuditing(string messageAuditingQueueName)
+        public IRebusConsumerConfig EnableMessageAuditing(string messageAuditingQueueName, Action<RebusAuditMessage> auditMessageHandler = null)
         {
             MessageAuditingEnabled = true;
             MessageAuditingQueueName = messageAuditingQueueName ?? throw new ArgumentNullException(nameof(messageAuditingQueueName));
+
+            //Action<RebusAuditMessage> handler = (message) => IocManager.Instance.Resolve<IAuditMessageHandler>().Handle(message);
+
+            //AuditMessageHandler = auditMessageHandler ?? handler;
 
             return this;
         }
@@ -145,5 +152,6 @@ namespace Abpro.MessageBus.Consumer
             SerializerConfigurer = serializerConfigurer ?? throw new ArgumentNullException(nameof(serializerConfigurer));
             return this;
         }
+
     }
 }

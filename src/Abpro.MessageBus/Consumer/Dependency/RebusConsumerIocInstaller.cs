@@ -1,4 +1,5 @@
-﻿using Abpro.MessageBus.Idempotents;
+﻿using Abpro.MessageBus.Consumer.Auditing;
+using Abpro.MessageBus.Idempotents;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
@@ -15,6 +16,8 @@ namespace Abpro.MessageBus.Consumer.Dependency
             container.Register(
                 Component.For<IRebusConsumerConfig, RebusConsumerConfig>().ImplementedBy<RebusConsumerConfig>().LifestyleSingleton(),
                 Component.For<IRebusConsumerBootstrapper, RebusConsumerBootstrapper>().ImplementedBy<RebusConsumerBootstrapper>().LifestyleSingleton(),
+                //Component.For<IRebusAuditingConsumer, RebusRabbitmqAuditingConsumer>().ImplementedBy<RebusRabbitmqAuditingConsumer>().LifestyleSingleton(),
+                //Component.For<IAuditMessageHandler, LoggerAuditMessageHandler>().ImplementedBy<LoggerAuditMessageHandler>().LifestyleSingleton(),
                 Component.For<IIdempotentKeyStore, CacheIdempotentKeyStore>().ImplementedBy<CacheIdempotentKeyStore>().LifestyleSingleton(),
                 Component.For<IIdempotentCoordinator, IdempotentCoordinator>().ImplementedBy<IdempotentCoordinator>().LifestyleSingleton()
                 );

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Abp.Dependency;
+using Abpro.MessageBus.Consumer.Auditing;
 using Rebus.Auditing.Messages;
 using Rebus.Bus;
 using Rebus.CastleWindsor;
@@ -77,6 +78,8 @@ namespace Abpro.MessageBus.Consumer
             {
                 bus.Subscribe(mqMessageType);
             }
+
+           // _iocManager.Resolve<IRebusAuditingConsumer>().HandleAuditedMessage();
 
             return bus;
         }
