@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using Castle.Core.Logging;
 
-namespace Abpro.WebApiClient
+namespace Abpro.WebApiClient.Factory
 {
     public interface IHttpClientFactory
     {

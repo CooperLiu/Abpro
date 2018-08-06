@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Castle.Core.Logging;
 
-namespace Abpro.WebApiClient
+namespace Abpro.WebApiClient.Factory
 {
     /// <summary>
     /// Used by the <see cref="DefaultHttpClientFactory"/> to apply additional initialization to the configure the 

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using Castle.MicroKernel.Registration;
 
-namespace Abpro.WebApiClient
+namespace Abpro.WebApiClient.Factory
 {
     public interface IHttpClientFactoryBuilder
     {

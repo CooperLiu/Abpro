@@ -3,7 +3,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.Windsor;
 
-namespace Abpro.WebApiClient
+namespace Abpro.WebApiClient.Factory
 {
     public interface IHttpClientFactoryDependency
     {

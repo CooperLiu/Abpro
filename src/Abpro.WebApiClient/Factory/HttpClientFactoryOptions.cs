@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 
-namespace Abpro.WebApiClient
+namespace Abpro.WebApiClient.Factory
 {
     /// <summary>
     /// An options class for configuring the default <see cref="IHttpClientFactory"/>.
