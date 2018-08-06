@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abpro.EntityFrameworkCore",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abpro", "src\Abpro\Abpro.csproj", "{FD8C24A0-36C9-4616-BD6D-09D65F08E8B5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{835F2003-6C6B-42CA-8ACE-752F40C87D4A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{835F2003-6C6B-42CA-8ACE-752F40C87D4A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abpro.Tests", "test\Abpro.Tests\Abpro.Tests.csproj", "{CF25DB84-CA8B-4F05-8E8C-760FE5FFACAD}"
 EndProject
@@ -25,7 +25,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBusPublisher", "Samp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBusConsumer", "Samples\MessageBusConsumer\MessageBusConsumer.csproj", "{F0CD9E60-B204-43C3-98F3-9F781EDB50E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBusMqMessage", "Samples\MessageBusMqMessage\MessageBusMqMessage.csproj", "{DFEDE6B7-CC45-4D06-B98D-82E3798967E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageBusMqMessage", "Samples\MessageBusMqMessage\MessageBusMqMessage.csproj", "{DFEDE6B7-CC45-4D06-B98D-82E3798967E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{B76C2326-55F1-4019-A53E-4C324D163ABD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

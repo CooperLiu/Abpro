@@ -79,8 +79,6 @@ namespace Abpro.MessageBus.Consumer
                 bus.Subscribe(mqMessageType);
             }
 
-           // _iocManager.Resolve<IRebusAuditingConsumer>().HandleAuditedMessage();
-
             return bus;
         }
     }

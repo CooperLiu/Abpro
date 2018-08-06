@@ -69,5 +69,21 @@ namespace Abpro.MessageBus.Consumer.Auditing
             return $"MessageId:{MessageId} \r\n CorrelationId:{CorrelationId} \r\n CorrelateSeq:{CorrelateSeq}\r\n MessageType:{MessageType}\r\n ContentType:{ContentType} \r\n ActionIntent:{ActionIntent}" +
                 $"SentTime:{SentTime} \r\n AuditTime:{AuditTime} \r\n AuditMachine:{AuditMachine} \r\n HandleQueue:{HandleQueue} \r\n HandleTime:{HandleTime} \r\n Body:{Body}";
         }
+
+        //var msg = new RebusAuditMessage()
+        //{
+        //    MessageId = e.BasicProperties.Headers["rbs2-msg-id"].ToString(),
+        //    CorrelationId = e.BasicProperties.Headers["rbs2-corr-id"].ToString(),
+        //    CorrelateSeq = e.BasicProperties.Headers["rbs2-corr-seq"].To<int>(),
+        //    MessageType = e.BasicProperties.Headers["rbs2-msg-type"].ToString(),
+        //    ContentType = e.BasicProperties.Headers["rbs2-content-type"].ToString(),
+        //    ActionIntent = e.BasicProperties.Headers["rbs2-intent"].ToString(),
+        //    SentTime = e.BasicProperties.Headers["rbs2-senttime"].To<DateTimeOffset>(),
+        //    AuditTime = e.BasicProperties.Headers["rbs2-audit-copytime"].To<DateTimeOffset>(),
+        //    AuditMachine = e.BasicProperties.Headers["rbs2-audit-machine"].ToString(),
+        //    HandleQueue = e.BasicProperties.Headers["rbs2-audit-handlequeue"].ToString(),
+        //    HandleTime = e.BasicProperties.Headers["rbs2-audit-handletime"].To<DateTimeOffset>(),
+        //    Body = Encoding.UTF8.GetString(e.Body)
+        //};
     }
 }
