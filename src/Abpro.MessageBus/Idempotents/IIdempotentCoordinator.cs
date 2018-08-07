@@ -31,7 +31,7 @@ namespace Abpro.MessageBus.Idempotents
 
         private IdempotentOptions _options;
 
-        private ConcurrentDictionary<string, string> IdempontentKeys = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> IdempontentKeys = new ConcurrentDictionary<string, string>();
 
         private string _ticketId;
 

@@ -18,7 +18,7 @@ namespace Abpro.MessageBus
 
     public class NullMessageBus : IMessageBus
     {
-        public static NullMessageBus Instance = new NullMessageBus();
+        public static readonly NullMessageBus Instance = new NullMessageBus();
 
         public IBus MessageBus { get; set; }
 

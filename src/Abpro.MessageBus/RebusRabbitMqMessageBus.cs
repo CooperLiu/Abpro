@@ -10,10 +10,6 @@ namespace Abpro.MessageBus
     {
         public IBus MessageBus { get; set; }
 
-        public RebusRabbitMqMessageBus()
-        {
-        }
-
         public void Publish(object message, Dictionary<string, string> optionalHeaders = null)
         {
             AsyncHelper.RunSync(() => MessageBus.Publish(message, optionalHeaders));
