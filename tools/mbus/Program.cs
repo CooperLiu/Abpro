@@ -1,13 +1,49 @@
 ﻿using System;
+using System.Text;
+using mbus.CommandLine;
+using mbus.Commands;
+using Microsoft.EntityFrameworkCore.Tools.Commands;
 
 namespace mbus
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            Console.ReadLine();
+            if (Console.IsOutputRedirected)
+            {
+                Console.OutputEncoding = Encoding.UTF8;
+            }
+
+            var app = new CommandLineApplication
+            {
+                Name = "ef"
+            };
+
+            new RootCommand().Configure(app);
+            try
+            {
+                return app.Execute(args);
+            }
+            catch (Exception ex)
+            {
+                //var wrappedException = ex as WrappedException;
+                //if (ex is CommandException
+                //    || ex is CommandParsingException
+                //    || (wrappedException != null
+                //        && wrappedException.Type == "Microsoft.EntityFrameworkCore.Design.OperationException"))
+                //{
+                //    Reporter.WriteVerbose(ex.ToString());
+                //}
+                //else
+                {
+                    Reporter.WriteInformation(ex.ToString());
+                }
+
+                Reporter.WriteError(ex.Message);
+
+                return 1;
+            }
         }
     }
 }

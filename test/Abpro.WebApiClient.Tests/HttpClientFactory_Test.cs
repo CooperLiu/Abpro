@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Abpro.WebApiClient.Factory;
 using Castle.Facilities.Logging;
 using Castle.Windsor;
 using Shouldly;
