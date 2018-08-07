@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessageBusMqMessage", "Samp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{B76C2326-55F1-4019-A53E-4C324D163ABD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mbus", "tools\mbus\mbus.csproj", "{73C20B92-C073-4EF9-95A4-6957A2BB20DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mbus", "tools\mbus\mbus.csproj", "{73C20B92-C073-4EF9-95A4-6957A2BB20DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abpro.MessageBus.ErrorQueue", "src\Abpro.MessageBus.ErrorQueue\Abpro.MessageBus.ErrorQueue.csproj", "{BD68D6E5-64C4-4A30-A516-01B43528917F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{73C20B92-C073-4EF9-95A4-6957A2BB20DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73C20B92-C073-4EF9-95A4-6957A2BB20DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73C20B92-C073-4EF9-95A4-6957A2BB20DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD68D6E5-64C4-4A30-A516-01B43528917F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD68D6E5-64C4-4A30-A516-01B43528917F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD68D6E5-64C4-4A30-A516-01B43528917F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD68D6E5-64C4-4A30-A516-01B43528917F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
