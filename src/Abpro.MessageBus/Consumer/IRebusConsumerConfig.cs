@@ -66,7 +66,6 @@ namespace Abpro.MessageBus.Consumer
         /// </summary>
         Action<StandardConfigurer<ISubscriptionStorage>> SubscriptionStorage { get; }
 
-        Action<RebusAuditMessage> AuditMessageHandler { get; }
 
         /// <summary>
         /// 连接RabbitMq

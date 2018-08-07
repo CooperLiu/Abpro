@@ -81,7 +81,6 @@ namespace Abpro.MessageBus.Consumer
         /// </summary>
         public Action<StandardConfigurer<ISubscriptionStorage>> SubscriptionStorage { get; private set; }
 
-        public Action<RebusAuditMessage> AuditMessageHandler { get; private set; }
 
         public IRebusConsumerConfig ConnectTo(string mqConnectionString)
         {
