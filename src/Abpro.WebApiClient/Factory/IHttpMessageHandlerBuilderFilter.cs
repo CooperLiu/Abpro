@@ -54,42 +54,4 @@ namespace Abpro.WebApiClient.Factory
         }
     }
 
-    public interface IHttpMessageHandlerBuilderFilterCollection
-    {
-        IList<IHttpMessageHandlerBuilderFilter> Filters { get; }
-
-        bool Contains(Type filter);
-
-        void Add(IHttpMessageHandlerBuilderFilter filter);
-
-        void Insert(int index, IHttpMessageHandlerBuilderFilter filter);
-    }
-
-    internal class HttpMessageHandlerBuilderFilterCollection : IHttpMessageHandlerBuilderFilterCollection
-    {
-        public static HttpMessageHandlerBuilderFilterCollection DefaultFilters = new HttpMessageHandlerBuilderFilterCollection();
-
-        public IList<IHttpMessageHandlerBuilderFilter> Filters { get; }
-
-        public HttpMessageHandlerBuilderFilterCollection()
-        {
-            Filters = new List<IHttpMessageHandlerBuilderFilter>();
-        }
-
-
-        public bool Contains(Type filter)
-        {
-            return Filters.Any(f => f.GetType() == filter);
-        }
-
-        public void Add(IHttpMessageHandlerBuilderFilter filter)
-        {
-            Filters.Add(filter);
-        }
-
-        public void Insert(int index, IHttpMessageHandlerBuilderFilter filter)
-        {
-            Filters.Insert(index, filter);
-        }
-    }
 }

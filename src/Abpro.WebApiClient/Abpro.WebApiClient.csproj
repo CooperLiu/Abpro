@@ -11,6 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Factory\HttpClientFactoryDependency.cs" />
+    <Compile Remove="Factory\IHttpClientFactoryBuilder.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
@@ -21,10 +26,6 @@
     <PackageReference Include="Castle.Core" Version="3.3.3" />
     <PackageReference Include="Castle.LoggingFacility" Version="3.4.0" />
     <PackageReference Include="Castle.Windsor" Version="3.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Factory\Dependency\" />
   </ItemGroup>
 
 </Project>
