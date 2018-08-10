@@ -7,7 +7,7 @@ namespace Abpro.WebApiClient.Factory
     {
         string Name { get; set; }
         HttpMessageHandler PrimaryHandler { get; set; }
-        IList<DelegatingHandler> AdditionalHandlers { get; }
+        IList<DelegatingHandler> AdditionalHandlers { get; set; }
         HttpMessageHandler Build();
     }
 }

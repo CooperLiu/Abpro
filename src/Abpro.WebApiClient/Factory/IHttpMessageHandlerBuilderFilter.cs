@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Abpro.WebApiClient.Factory.Logging;
 using Castle.Core.Logging;
 
 namespace Abpro.WebApiClient.Factory
@@ -41,14 +42,14 @@ namespace Abpro.WebApiClient.Factory
                 // We want all of our logging message to show up as-if they are coming from HttpClient,
                 // but also to include the name of the client for more fine-grained control.
                 var outerLogger = _loggerFactory.Create($"System.Net.Http.HttpClient.{loggerName}.LogicalHandler");
-                var innerLogger = _loggerFactory.Create($"System.Net.Http.HttpClient.{loggerName}.ClientHandler");
+                //var innerLogger = _loggerFactory.Create($"System.Net.Http.HttpClient.{loggerName}.ClientHandler");
 
-                //// The 'scope' handler goes first so it can surround everything.
-                //builder.AdditionalHandlers.Insert(0, new LoggingScopeHttpMessageHandler(outerLogger));
+                // The 'scope' handler goes first so it can surround everything.
+                builder.AdditionalHandlers.Insert(0, new LoggingScopeHttpMessageHandler(outerLogger));
 
-                //// We want this handler to be last so we can log details about the request after
-                //// service discovery and security happen.
-                //builder.AdditionalHandlers.Add(new LoggingHttpMessageHandler(innerLogger));
+                // We want this handler to be last so we can log details about the request after
+                // service discovery and security happen.
+                // builder.AdditionalHandlers.Add(new LoggingHttpMessageHandler(innerLogger));
 
             };
         }

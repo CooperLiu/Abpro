@@ -11,7 +11,7 @@ namespace Abpro.WebApiClient.Factory
 
         public abstract HttpMessageHandler PrimaryHandler { get; set; }
 
-        public abstract IList<DelegatingHandler> AdditionalHandlers { get; }
+        public abstract IList<DelegatingHandler> AdditionalHandlers { get; set; }
 
         public abstract HttpMessageHandler Build();
 

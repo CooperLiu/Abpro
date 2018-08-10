@@ -14,9 +14,9 @@ namespace Abpro.WebApiClient.Factory
             set => _name = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        public override HttpMessageHandler PrimaryHandler { get; set; } = new HttpClientHandler();  
+        public override HttpMessageHandler PrimaryHandler { get; set; } = new HttpClientHandler();
 
-        public override IList<DelegatingHandler> AdditionalHandlers => new List<DelegatingHandler>();
+        public override IList<DelegatingHandler> AdditionalHandlers { get; set; } = new List<DelegatingHandler>();
 
         public override HttpMessageHandler Build()
         {

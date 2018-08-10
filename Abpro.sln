@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abpro.MessageBus.ErrorQueue
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abpro.Integration.Tests", "test\Abpro.Integration.Tests\Abpro.Integration.Tests.csproj", "{94A2BE0F-E9F8-4A7D-95AF-B141A724919B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiClientFactoryDemo", "Samples\WebApiClientFactoryDemo\WebApiClientFactoryDemo.csproj", "{12DDC10E-55B9-4980-9B3B-79984C98E71E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{94A2BE0F-E9F8-4A7D-95AF-B141A724919B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94A2BE0F-E9F8-4A7D-95AF-B141A724919B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94A2BE0F-E9F8-4A7D-95AF-B141A724919B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12DDC10E-55B9-4980-9B3B-79984C98E71E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12DDC10E-55B9-4980-9B3B-79984C98E71E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12DDC10E-55B9-4980-9B3B-79984C98E71E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12DDC10E-55B9-4980-9B3B-79984C98E71E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +100,7 @@ Global
 		{DFEDE6B7-CC45-4D06-B98D-82E3798967E1} = {43FB94FD-4723-4EF1-A747-25A84F7BF77F}
 		{73C20B92-C073-4EF9-95A4-6957A2BB20DC} = {B76C2326-55F1-4019-A53E-4C324D163ABD}
 		{94A2BE0F-E9F8-4A7D-95AF-B141A724919B} = {835F2003-6C6B-42CA-8ACE-752F40C87D4A}
+		{12DDC10E-55B9-4980-9B3B-79984C98E71E} = {43FB94FD-4723-4EF1-A747-25A84F7BF77F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3F1E02E8-7F24-4A04-B7CD-BD6FF9004747}

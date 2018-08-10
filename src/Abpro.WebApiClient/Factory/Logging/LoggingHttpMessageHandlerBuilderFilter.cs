@@ -45,7 +45,7 @@ namespace Abpro.WebApiClient.Factory.Logging
 
                 // We want this handler to be last so we can log details about the request after
                 // service discovery and security happen.
-                builder.AdditionalHandlers.Add(new LoggingHttpMessageHandler(innerLogger));
+                //builder.AdditionalHandlers.Add(new LoggingHttpMessageHandler(innerLogger));
 
             };
         }
