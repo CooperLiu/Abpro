@@ -1,5 +1,6 @@
 ﻿using Abp.Modules;
 using Abpro.WebApiClient;
+using Abpro.WebApiClient.Factory;
 
 namespace WebApiClientFactoryDemo
 {
@@ -8,6 +9,12 @@ namespace WebApiClientFactoryDemo
         )]
     public class WebApiClientFactoryModule : AbpModule
     {
-
+        public override void PreInitialize()
+        {
+            Configuration
+                .Modules
+                .AddHttpClientFactory()
+                .EnableHttpCallingAuditing();
+        }
     }
 }

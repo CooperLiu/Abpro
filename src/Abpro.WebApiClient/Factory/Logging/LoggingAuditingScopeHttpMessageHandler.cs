@@ -6,22 +6,20 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Abpro.WebApiClient.Auditing;
 using Castle.Core.Logging;
 
 namespace Abpro.WebApiClient.Factory.Logging
 {
-    public class LoggingScopeHttpMessageHandler : DelegatingHandler
+    public class LoggingAuditingScopeHttpMessageHandler : DelegatingHandler
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
+        private readonly IHttpCallingAuditingHelper _auditingHelper;
 
-        public LoggingScopeHttpMessageHandler(ILogger logger)
+        public LoggingAuditingScopeHttpMessageHandler(ILogger logger, IHttpCallingAuditingHelper auditingHelper)
         {
-            if (logger == null)
-            {
-                throw new ArgumentNullException(nameof(logger));
-            }
-
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _auditingHelper = auditingHelper;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -39,6 +37,13 @@ namespace Abpro.WebApiClient.Factory.Logging
                 Log.RequestPipelineStart(_logger, trackId, request, await request.Content.ReadAsStringAsync());
                 var response = await base.SendAsync(request, cancellationToken);
                 Log.RequestPipelineEnd(_logger, trackId, response, await response.Content.ReadAsStringAsync(), stopwatch.GetElapsedTime());
+
+                if (_auditingHelper.IsEnableHttpCallingAuditing())
+                {
+                    var auditingInfo = await _auditingHelper.CreateAuditingInfo(trackId, request, stopwatch.GetElapsedTime().TotalMilliseconds, response.StatusCode, response);
+
+                    await _auditingHelper.SaveAsync(auditingInfo);
+                }
 
                 return response;
             }

@@ -41,7 +41,7 @@ namespace Abpro.WebApiClient.Factory.Logging
                 var innerLogger = _loggerFactory.Create($"System.Net.Http.HttpClient.{loggerName}.ClientHandler");
 
                 // The 'scope' handler goes first so it can surround everything.
-                builder.AdditionalHandlers.Insert(0, new LoggingScopeHttpMessageHandler(outerLogger));
+                builder.AdditionalHandlers.Insert(0, new LoggingAuditingScopeHttpMessageHandler(outerLogger));
 
                 // We want this handler to be last so we can log details about the request after
                 // service discovery and security happen.

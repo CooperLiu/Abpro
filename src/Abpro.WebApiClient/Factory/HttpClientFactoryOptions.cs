@@ -47,6 +47,11 @@ namespace Abpro.WebApiClient.Factory
         TimeSpan HandlerLifetime { get; set; }
 
         /// <summary>
+        /// 是否开启Http请求审计
+        /// </summary>
+        bool IsEnableHttpCallingAuditing { get; }
+
+        /// <summary>
         /// 增加HttpMessageHandler配置方法
         /// </summary>
         /// <param name="builderAction"></param>
@@ -60,6 +65,12 @@ namespace Abpro.WebApiClient.Factory
         /// <param name="clientAction"></param>
         /// <returns></returns>
         IHttpClientFactoryOptions AddHttpClientAction(Action<HttpClient> clientAction);
+
+        /// <summary>
+        /// 启用Http请求审计
+        /// </summary>
+        /// <returns></returns>
+        IHttpClientFactoryOptions EnableHttpCallingAuditing();
     }
 
     /// <summary>
@@ -120,6 +131,22 @@ namespace Abpro.WebApiClient.Factory
 
                 _handlerLifetime = value;
             }
+        }
+
+        /// <summary>
+        /// 是否开启Http请求审计
+        /// </summary>
+        public bool IsEnableHttpCallingAuditing { get; private set; }
+
+        /// <summary>
+        /// 启用Http请求审计
+        /// </summary>
+        /// <returns></returns>
+        public IHttpClientFactoryOptions EnableHttpCallingAuditing()
+        {
+            IsEnableHttpCallingAuditing = true;
+
+            return this;
         }
 
 

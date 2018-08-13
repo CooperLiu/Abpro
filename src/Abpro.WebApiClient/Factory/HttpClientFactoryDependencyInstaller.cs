@@ -1,4 +1,5 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using Abpro.WebApiClient.Auditing;
+using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
@@ -18,6 +19,10 @@ namespace Abpro.WebApiClient.Factory
                 Component.For<IHttpMessageHandlerBuilder, HttpMessageHandlerBuilder>().ImplementedBy<DefaultHttpMessageHandlerBuilder>(),
 
                 Component.For<IHttpClientFactory, DefaultHttpClientFactory>().ImplementedBy<DefaultHttpClientFactory>(),
+
+                Component.For<IHttpCallingAuditingHelper, HttpCallingAuditingHelper>().ImplementedBy<HttpCallingAuditingHelper>().LifestyleTransient(),
+
+                Component.For<IHttpCallingAuditingStore, NullHttpCallingAuditingStore>().ImplementedBy<NullHttpCallingAuditingStore>().LifestyleTransient(),
 
                 Component.For<IHttpMessageHandlerBuilderFilter, LoggingHttpMessageHandlerBuilderFilter>().ImplementedBy<LoggingHttpMessageHandlerBuilderFilter>()
                 );

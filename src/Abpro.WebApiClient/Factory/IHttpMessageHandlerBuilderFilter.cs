@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Abpro.WebApiClient.Auditing;
 using Abpro.WebApiClient.Factory.Logging;
 using Castle.Core.Logging;
 
@@ -24,10 +25,13 @@ namespace Abpro.WebApiClient.Factory
     internal class LoggingHttpMessageHandlerBuilderFilter : IHttpMessageHandlerBuilderFilter
     {
         private readonly ILoggerFactory _loggerFactory;
+        private readonly IHttpCallingAuditingHelper _auditingHelper;
 
-        public LoggingHttpMessageHandlerBuilderFilter(ILoggerFactory loggerFactory)
+
+        public LoggingHttpMessageHandlerBuilderFilter(ILoggerFactory loggerFactory, IHttpCallingAuditingHelper auditingHelper)
         {
             _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
+            _auditingHelper = auditingHelper;
         }
         public Action<IHttpMessageHandlerBuilder> Configure(Action<IHttpMessageHandlerBuilder> next)
         {
@@ -45,7 +49,7 @@ namespace Abpro.WebApiClient.Factory
                 //var innerLogger = _loggerFactory.Create($"System.Net.Http.HttpClient.{loggerName}.ClientHandler");
 
                 // The 'scope' handler goes first so it can surround everything.
-                builder.AdditionalHandlers.Insert(0, new LoggingScopeHttpMessageHandler(outerLogger));
+                builder.AdditionalHandlers.Insert(0, new LoggingAuditingScopeHttpMessageHandler(outerLogger, _auditingHelper));
 
                 // We want this handler to be last so we can log details about the request after
                 // service discovery and security happen.

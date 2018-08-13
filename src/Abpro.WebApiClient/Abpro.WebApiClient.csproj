@@ -13,6 +13,7 @@
   <ItemGroup>
     <Compile Remove="Factory\HttpClientFactoryDependency.cs" />
     <Compile Remove="Factory\IHttpClientFactoryBuilder.cs" />
+    <Compile Remove="Factory\Logging\LoggingHttpMessageHandlerBuilderFilter.cs" />
   </ItemGroup>
 
   <ItemGroup>
