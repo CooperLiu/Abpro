@@ -22,16 +22,36 @@ namespace Abpro.WebApiClient.Factory
     }
 
 
-    internal class LoggingHttpMessageHandlerBuilderFilter : IHttpMessageHandlerBuilderFilter
+    internal class AuditingHttpMessageHandlerBuilderFilter : IHttpMessageHandlerBuilderFilter
     {
-        private readonly ILoggerFactory _loggerFactory;
         private readonly IHttpCallingAuditingHelper _auditingHelper;
 
 
-        public LoggingHttpMessageHandlerBuilderFilter(ILoggerFactory loggerFactory, IHttpCallingAuditingHelper auditingHelper)
+        public AuditingHttpMessageHandlerBuilderFilter( IHttpCallingAuditingHelper auditingHelper)
+        {
+            _auditingHelper = auditingHelper;
+        }
+        public Action<IHttpMessageHandlerBuilder> Configure(Action<IHttpMessageHandlerBuilder> next)
+        {
+            if (next == null) throw new ArgumentNullException(nameof(next));
+
+            return (builder) =>
+            {
+                next(builder);
+                builder.AdditionalHandlers.Insert(0, new AuditingHttpMessageHandler(_auditingHelper));
+            };
+        }
+    }
+
+
+
+    public class LoggingHttpMessageHandlerBuilderFilter : IHttpMessageHandlerBuilderFilter
+    {
+        private readonly ILoggerFactory _loggerFactory;
+
+        public LoggingHttpMessageHandlerBuilderFilter(ILoggerFactory loggerFactory)
         {
             _loggerFactory = loggerFactory ?? throw new ArgumentNullException(nameof(loggerFactory));
-            _auditingHelper = auditingHelper;
         }
         public Action<IHttpMessageHandlerBuilder> Configure(Action<IHttpMessageHandlerBuilder> next)
         {
@@ -49,7 +69,7 @@ namespace Abpro.WebApiClient.Factory
                 //var innerLogger = _loggerFactory.Create($"System.Net.Http.HttpClient.{loggerName}.ClientHandler");
 
                 // The 'scope' handler goes first so it can surround everything.
-                builder.AdditionalHandlers.Insert(0, new LoggingAuditingScopeHttpMessageHandler(outerLogger, _auditingHelper));
+                builder.AdditionalHandlers.Add(new LoggingAuditingScopeHttpMessageHandler(outerLogger));
 
                 // We want this handler to be last so we can log details about the request after
                 // service discovery and security happen.

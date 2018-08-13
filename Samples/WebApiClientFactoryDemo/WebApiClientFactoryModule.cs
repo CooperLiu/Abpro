@@ -1,6 +1,7 @@
 ﻿using Abp.Modules;
 using Abpro.WebApiClient;
 using Abpro.WebApiClient.Factory;
+using Abpro.WebApiClient.Factory.Logging;
 
 namespace WebApiClientFactoryDemo
 {
@@ -11,6 +12,8 @@ namespace WebApiClientFactoryDemo
     {
         public override void PreInitialize()
         {
+            IocManager.Register<IHttpMessageHandlerBuilderFilter, LoggingHttpMessageHandlerBuilderFilter>();
+
             Configuration
                 .Modules
                 .AddHttpClientFactory()

@@ -24,7 +24,7 @@ namespace Abpro.WebApiClient.Factory
 
                 Component.For<IHttpCallingAuditingStore, NullHttpCallingAuditingStore>().ImplementedBy<NullHttpCallingAuditingStore>().LifestyleTransient(),
 
-                Component.For<IHttpMessageHandlerBuilderFilter, LoggingHttpMessageHandlerBuilderFilter>().ImplementedBy<LoggingHttpMessageHandlerBuilderFilter>()
+                Component.For<IHttpMessageHandlerBuilderFilter, AuditingHttpMessageHandlerBuilderFilter>().ImplementedBy<AuditingHttpMessageHandlerBuilderFilter>()
                 );
         }
     }

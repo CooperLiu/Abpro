@@ -2,11 +2,11 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Abpro.WebApiClient.Auditing;
 using Castle.Core.Logging;
 
 namespace Abpro.WebApiClient.Factory.Logging
@@ -14,12 +14,10 @@ namespace Abpro.WebApiClient.Factory.Logging
     public class LoggingAuditingScopeHttpMessageHandler : DelegatingHandler
     {
         private readonly ILogger _logger;
-        private readonly IHttpCallingAuditingHelper _auditingHelper;
 
-        public LoggingAuditingScopeHttpMessageHandler(ILogger logger, IHttpCallingAuditingHelper auditingHelper)
+        public LoggingAuditingScopeHttpMessageHandler(ILogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _auditingHelper = auditingHelper;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -30,20 +28,16 @@ namespace Abpro.WebApiClient.Factory.Logging
             }
 
             var stopwatch = ValueStopwatch.StartNew();
-            var trackId = Guid.NewGuid().ToString("N");
+
+            request.Headers.TryGetValues(WebApiClientConsts.HttpTrackIdHeadName, out var trackIds);
+            var ids = trackIds.ToArray();
+            var trackId = ids.Any() ? ids.First() : Guid.NewGuid().ToString("N");
 
             using (Log.BeginRequestPipelineScope(_logger, trackId, request))
             {
                 Log.RequestPipelineStart(_logger, trackId, request, await request.Content.ReadAsStringAsync());
                 var response = await base.SendAsync(request, cancellationToken);
                 Log.RequestPipelineEnd(_logger, trackId, response, await response.Content.ReadAsStringAsync(), stopwatch.GetElapsedTime());
-
-                if (_auditingHelper.IsEnableHttpCallingAuditing())
-                {
-                    var auditingInfo = await _auditingHelper.CreateAuditingInfo(trackId, request, stopwatch.GetElapsedTime().TotalMilliseconds, response.StatusCode, response);
-
-                    await _auditingHelper.SaveAsync(auditingInfo);
-                }
 
                 return response;
             }
