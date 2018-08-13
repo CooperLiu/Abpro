@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="..\..\WebApiClient.version.props"></Import>
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
+    <Description>Based on netframework4.6.1, httpclient instance lifecycle</Description>
+
   </PropertyGroup>
 
   <ItemGroup>
