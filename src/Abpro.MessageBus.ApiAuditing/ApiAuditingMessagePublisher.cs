@@ -3,11 +3,11 @@ using Abp.Auditing;
 
 namespace Abpro.MessageBus.Publisher.ApiAuditing
 {
-    public class ApiAuditingStore : IAuditingStore
+    public class ApiAuditingMessagePublisher : IAuditingStore
     {
         private readonly IMessageBus _bus;
 
-        public ApiAuditingStore(IMessageBus bus)
+        public ApiAuditingMessagePublisher(IMessageBus bus)
         {
             _bus = bus;
         }
