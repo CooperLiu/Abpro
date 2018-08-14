@@ -16,8 +16,7 @@ namespace Abpro.MessageBus.Publisher.Dependency
             container.Register(
                 Component.For<IMessageBus, RebusRabbitMqMessageBus>().ImplementedBy<RebusRabbitMqMessageBus>().LifestyleSingleton(),
                 Component.For<IRebusEventDataPublisherConfig, RebusEventDataPublisherConfig>().ImplementedBy<RebusEventDataPublisherConfig>().LifestyleSingleton(),
-                Component.For<IRebusEventDataPublisherBootstrapper, RebusEventDataPublisherBootstrapper>().ImplementedBy<RebusEventDataPublisherBootstrapper>().LifestyleSingleton(),
-                Component.For<IAuditingStore, ApiAuditingStore>().ImplementedBy<ApiAuditingStore>().LifestyleSingleton()
+                Component.For<IRebusEventDataPublisherBootstrapper, RebusEventDataPublisherBootstrapper>().ImplementedBy<RebusEventDataPublisherBootstrapper>().LifestyleSingleton()
             );
         }
     }
