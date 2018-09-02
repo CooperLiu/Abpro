@@ -24,12 +24,9 @@ namespace Abpro.HttpClientFactory.Auditing
 
             response.Headers.TryAddWithoutValidation(WebApiClientConsts.HttpTrackIdHeadName, trackId);
 
-            if (_auditingHelper.IsEnableHttpCallingAuditing())
-            {
-                var auditingInfo = await _auditingHelper.CreateAuditingInfo(trackId, request, stopwatch.GetElapsedTime().TotalMilliseconds, response.StatusCode, response);
+            var auditingInfo = await _auditingHelper.CreateAuditingInfo(trackId, request, stopwatch.GetElapsedTime().TotalMilliseconds, response.StatusCode, response);
 
-                await _auditingHelper.SaveAsync(auditingInfo);
-            }
+            await _auditingHelper.SaveAsync(auditingInfo);
 
             return response;
         }

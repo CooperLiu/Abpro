@@ -26,12 +26,12 @@ namespace Abpro.HttpClientFactory.Auditing
             auditingInfo.TrackId = trackId;
             auditingInfo.HttpMethod = request.Method.Method;
             auditingInfo.RequestHeaders = new HttpHeadersLogValue(HttpHeadersLogValue.Kind.Request, request.Headers, request.Content?.Headers).ToString();
-            auditingInfo.RequestBody = await request.Content?.ReadAsStringAsync();
+            auditingInfo.RequestBody = request.Content != null ? await request.Content?.ReadAsStringAsync() : null;
             auditingInfo.ExecutionDuration = executionDuration;
 
             auditingInfo.HttpStatusCode = (int)response.StatusCode;
             auditingInfo.ResponseHeaders = new HttpHeadersLogValue(HttpHeadersLogValue.Kind.Response, response.Headers, response.Content?.Headers).ToString();
-            auditingInfo.ResponseBody = await response.Content?.ReadAsStringAsync();
+            auditingInfo.ResponseBody = response.Content != null ? await response.Content?.ReadAsStringAsync() : null;
 
             return auditingInfo;
 
