@@ -16,8 +16,8 @@ namespace Abpro.AuditLogging.Kafka
     public class AuditLoggingKafkaConfig : IAuditLoggingKafkaConfig
     {
         public string BootstrapServers { get; set; }
-        public string Topic { get; set; }
-        public int FlushTimeout { get; set; }
+        public string Topic { get; set; } = "api-audit-log";
+        public int FlushTimeout { get; set; } = 30;
     }
 
 
