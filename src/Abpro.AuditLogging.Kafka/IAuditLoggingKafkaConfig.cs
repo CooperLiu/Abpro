@@ -5,6 +5,8 @@ namespace Abpro.AuditLogging.Kafka
 {
     public interface IAuditLoggingKafkaConfig
     {
+        bool Enable { get; set; }
+
         string BootstrapServers { get; set; }
 
         string Topic { get; set; }
@@ -15,8 +17,12 @@ namespace Abpro.AuditLogging.Kafka
 
     public class AuditLoggingKafkaConfig : IAuditLoggingKafkaConfig
     {
+        public bool Enable { get; set; } = true;
+
         public string BootstrapServers { get; set; }
+
         public string Topic { get; set; } = "api-audit-log";
+
         public int FlushTimeout { get; set; } = 30;
     }
 
@@ -27,6 +33,15 @@ namespace Abpro.AuditLogging.Kafka
         {
             return configuration.AbpConfiguration.GetOrCreate("Modules.Abp.AuditLoggingKafkaProducer", () => configuration.AbpConfiguration.IocManager.Resolve<IAuditLoggingKafkaConfig>());
         }
+
+
+        public static IAuditLoggingKafkaConfig Enable(this IAuditLoggingKafkaConfig config, bool enable = true)
+        {
+            config.Enable = enable;
+
+            return config;
+        }
+
 
         public static IAuditLoggingKafkaConfig SetBootstrapServers(this IAuditLoggingKafkaConfig config, string bootstrapServers)
         {

@@ -28,6 +28,11 @@ namespace Abpro.AuditLogging.Kafka
 
         public async Task SaveAsync(AuditInfo auditInfo)
         {
+            if (!_kafkaConfig.Enable)
+            {
+                return;
+            }
+
             var m = new AuditInfoMqMessage();
             m.TenantId = auditInfo.TenantId;
             m.UserId = auditInfo.UserId;
