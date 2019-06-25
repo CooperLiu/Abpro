@@ -1,17 +1,32 @@
-﻿using System.Threading.Tasks;
+﻿using System.Configuration;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 using Abp.Auditing;
 using Abp.Dependency;
-using Castle.Core.Logging;
+using Serilog;
 
 namespace Abpro.AuditLogging.File
 {
     public class AuditLoggingFileStore : IAuditingStore, ITransientDependency
     {
-        public ILogger Logger { get; set; }
+        public static readonly string LogPath = ConfigurationManager.AppSettings["AuditLogging.Path"];
+        public static readonly string LogName = ConfigurationManager.AppSettings["AuditLogging.Name"];
+
+        static AuditLoggingFileStore()
+        {
+            var path = LogPath ?? "c:\\logs";
+            var name = LogName ?? "auditlog.log";
+
+            var logPath = Path.Combine(path, name);
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File(logPath, rollingInterval: RollingInterval.Hour, outputTemplate: "{Message:lj}{NewLine}")
+                .CreateLogger();
+        }
 
         public AuditLoggingFileStore()
         {
-            Logger = NullLogger.Instance;
         }
 
         public async Task SaveAsync(AuditInfo auditInfo)
@@ -43,7 +58,9 @@ namespace Abpro.AuditLogging.File
                 }
             }
 
-            Logger.Info(m.ToString());
+            Log.Debug("{@m}", m);
+
+            await Task.CompletedTask;
         }
     }
 }
