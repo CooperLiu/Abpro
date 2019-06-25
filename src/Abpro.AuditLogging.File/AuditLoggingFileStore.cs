@@ -1,6 +1,6 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Abp.Auditing;
 using Abp.Dependency;
@@ -10,11 +10,23 @@ namespace Abpro.AuditLogging.File
 {
     public class AuditLoggingFileStore : IAuditingStore, ITransientDependency
     {
-        public static readonly string LogPath = ConfigurationManager.AppSettings["AuditLogging.Path"];
-        public static readonly string LogName = ConfigurationManager.AppSettings["AuditLogging.Name"];
+        private static readonly string LogPath = ConfigurationManager.AppSettings["AuditLogging.Path"] ?? "c:\\logs";
+        private static readonly string LogName = ConfigurationManager.AppSettings["AuditLogging.Name"] ?? "auditlog.log";
+
+        private static readonly bool LogEnable = ConfigurationManager.AppSettings["AuditLogging.Enable"]
+                                                  ?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? true;
+
+        private static readonly bool Enable = (ConfigurationManager.AppSettings["AuditLogging.Path"] != null
+                                               && ConfigurationManager.AppSettings["AuditLogging.Name"] != null
+                                               && LogEnable);
 
         static AuditLoggingFileStore()
         {
+            if (!Enable)
+            {
+                return;
+            }
+
             var path = LogPath ?? "c:\\logs";
             var name = LogName ?? "auditlog.log";
 
@@ -31,6 +43,11 @@ namespace Abpro.AuditLogging.File
 
         public async Task SaveAsync(AuditInfo auditInfo)
         {
+            if (Enable)
+            {
+                return;
+            }
+
             var m = new AuditInfoMqMessage();
             m.TenantId = auditInfo.TenantId;
             m.UserId = auditInfo.UserId;
