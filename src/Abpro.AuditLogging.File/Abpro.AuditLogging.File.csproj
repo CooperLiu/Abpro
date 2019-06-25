@@ -1,16 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>0.0.2</Version>
+    <Version>1.0.0</Version>
   </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
-    <PackageReference Include="Abp" Version="1.4.2.0"></PackageReference>
+    <PackageReference Include="Abp" Version="1.5.1.0"></PackageReference>
+    <Reference Include="System.Configuration" />
+
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.8.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.0.0" />
   </ItemGroup>
- 
 </Project>

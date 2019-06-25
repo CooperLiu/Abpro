@@ -10,14 +10,14 @@ namespace Abpro.AuditLogging.File
 {
     public class AuditLoggingFileStore : IAuditingStore, ITransientDependency
     {
-        private static readonly string LogPath = ConfigurationManager.AppSettings["AuditLogging.Path"] ?? "c:\\logs";
-        private static readonly string LogName = ConfigurationManager.AppSettings["AuditLogging.Name"] ?? "auditlog.log";
+        private static readonly string LogPath = ConfigurationManager.AppSettings["AuditLogging.File.Path"] ?? "c:\\logs";
+        private static readonly string LogName = ConfigurationManager.AppSettings["AuditLogging.File.Name"] ?? "auditlog.log";
 
         private static readonly bool LogEnable = ConfigurationManager.AppSettings["AuditLogging.Enable"]
                                                   ?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? true;
 
-        private static readonly bool Enable = (ConfigurationManager.AppSettings["AuditLogging.Path"] != null
-                                               && ConfigurationManager.AppSettings["AuditLogging.Name"] != null
+        private static readonly bool Enable = (ConfigurationManager.AppSettings["AuditLogging.File.Path"] != null
+                                               && ConfigurationManager.AppSettings["AuditLogging.File.Name"] != null
                                                && LogEnable);
 
         static AuditLoggingFileStore()
