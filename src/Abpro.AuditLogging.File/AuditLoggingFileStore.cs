@@ -43,7 +43,7 @@ namespace Abpro.AuditLogging.File
 
         public async Task SaveAsync(AuditInfo auditInfo)
         {
-            if (Enable)
+            if (!Enable)
             {
                 return;
             }
